@@ -1,0 +1,29 @@
+app = "dora-search-mock-origin"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORTS = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[checks]
+  [checks.health]
+    port = 8080
+    type = "http"
+    interval = "15s"
+    timeout = "5s"
+    grace_period = "10s"
+    path = "/healthz"
