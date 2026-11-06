@@ -1,7 +1,7 @@
 import http, { type IncomingMessage, type ServerResponse } from 'node:http';
 import { GatewayRouter } from './gateway/router.js';
 
-const PORT = Number(process.env.PORT || 3000);
+const PORT = Number(process.env.PORT || (process.env.FLY_APP_NAME ? 8080 : 3000));
 const HOST = process.env.HOST || '0.0.0.0';
 
 const gateway = new GatewayRouter({
