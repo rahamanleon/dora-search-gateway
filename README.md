@@ -13,7 +13,8 @@ Dora Search is independently deployable across free hosting tiers, provides auto
   1. **Oracle Cloud Always Free**: Primary persistent Docker host running SearXNG, Valkey, and Caddy reverse proxy with automated HTTPS.
   2. **Google Cloud Run**: Independent backup container with scale-to-zero and hard spending protection (`max-instances: 1`).
   3. **Render Free Tier**: Emergency fallback container with 512MB RAM optimization.
-  4. **Cloudflare Workers Free**: Global edge API gateway, secret authenticator, rate limiter, and failover router.
+  4. **Fly.io Free Tier**: Additional scale-to-zero fallback container with 256MB RAM optimization.
+  5. **Cloudflare Workers Free**: Global edge API gateway, secret authenticator, rate limiter, and failover router.
 - **Resilient Failover Manager**:
   - Sequential failover (Oracle &rarr; Cloud Run &rarr; Render).
   - Per-origin timeouts and limited retries.
@@ -129,6 +130,7 @@ Tested scenarios:
 - [Oracle Cloud Deployment Guide](docs/deployment-oracle.md)
 - [Google Cloud Run Deployment Guide](docs/deployment-cloud-run.md)
 - [Render Free Tier Deployment Guide](docs/deployment-render.md)
+- [Fly.io Free Tier Deployment Guide](docs/deployment-fly.md)
 - [Cloudflare Workers Deployment Guide](docs/deployment-cloudflare.md)
 - [Troubleshooting Guide](docs/troubleshooting.md)
 
