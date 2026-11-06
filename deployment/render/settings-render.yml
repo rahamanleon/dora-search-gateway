@@ -10,8 +10,10 @@ general:
   enable_metrics: false
 
 server:
+  secret_key: "render_dora_searxng_secret_key_change_me_min32chars"
   port: 8080
   bind_address: "0.0.0.0"
+  base_url: false
   limiter: false # Free container has only 512MB, avoid standalone Valkey overhead
   image_proxy: false
   http_protocol_version: "1.1"
