@@ -1,0 +1,54 @@
+services:
+  valkey:
+    image: valkey/valkey:8.0.2-alpine
+    container_name: dora-valkey
+    restart: unless-stopped
+    command: valkey-server --save "" --appendonly no --maxmemory 128mb --maxmemory-policy allkeys-lru
+    networks:
+      - dora-net
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    mem_limit: 192m
+
+  searxng:
+    image: searxng/searxng:2025.2.22-3715d0ec3
+    container_name: dora-searxng
+    restart: unless-stopped
+    networks:
+      - dora-net
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./searxng:/etc/searxng:ro
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8080/
+      - SEARXNG_SECRET=dora_searxng_secret_key_change_me_in_production_min32chars
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    depends_on:
+      valkey:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    mem_limit: 512m
+
+networks:
+  dora-net:
+    driver: bridge
+

@@ -1,0 +1,18 @@
+# SearXNG Limiter configuration (Valkey / Redis backed)
+[botdetection.ip_limit]
+# Filter out aggressive scrapers / bot bursts
+filter_link_local = true
+link_token = false
+
+[botdetection.ip_lists]
+pass_searxng_org = false
+
+# IP rate limiting
+[ratelimit]
+# Burst limit
+burst = 100
+# Window in seconds
+window = 60
+# Ban time in seconds
+ban_time = 300
+

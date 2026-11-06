@@ -1,0 +1,80 @@
+services:
+  caddy:
+    image: caddy:2.8.4-alpine
+    container_name: dora-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+      - ACME_EMAIL=${ACME_EMAIL}
+      - UPSTREAM_SECRET_TOKEN=${UPSTREAM_SECRET_TOKEN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - dora-backend
+    depends_on:
+      - searxng
+    mem_limit: 128m
+
+  valkey:
+    image: valkey/valkey:8.0.2-alpine
+    container_name: dora-valkey
+    restart: unless-stopped
+    command: valkey-server --save "" --appendonly no --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - dora-backend
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    mem_limit: 384m
+
+  searxng:
+    image: searxng/searxng:2025.2.22-3715d0ec3
+    container_name: dora-searxng
+    restart: unless-stopped
+    networks:
+      - dora-backend
+    # Do NOT bind port 8080 to host; keep internal to Docker network for Caddy
+    expose:
+      - "8080"
+    volumes:
+      - ../../searxng:/etc/searxng:ro
+    environment:
+      - SEARXNG_BASE_URL=https://${DOMAIN}/
+      - SEARXNG_SECRET=${SEARXNG_SECRET}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    depends_on:
+      valkey:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    mem_limit: 1024m
+
+networks:
+  dora-backend:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
+

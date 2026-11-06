@@ -1,0 +1,65 @@
+# SearXNG configuration for Cloud Run Backup Container
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "Dora Search (Cloud Run Backup)"
+  donation_url: false
+  contact_url: false
+  privacypolicy_url: false
+  enable_metrics: false
+
+server:
+  secret_key: "cloudrun_dora_searxng_secret_key_change_me_min32chars"
+  port: 8080
+  bind_address: "0.0.0.0"
+  limiter: false # In Cloud Run, rate limiting is handled by the Cloudflare Gateway or Cloud Run quotas
+  image_proxy: false
+  http_protocol_version: "1.1"
+  method: "GET"
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "auto"
+  ban_time_on_fail: 300
+  max_ban_time_on_fail: 3600
+  formats:
+    - json
+    - html
+
+# Independent keyless upstream engines
+engines:
+  - name: duckduckgo
+    engine: duckduckgo
+    timeout: 3.0
+    disabled: false
+
+  - name: brave
+    engine: brave
+    timeout: 3.0
+    disabled: false
+
+  - name: qwant
+    engine: qwant
+    timeout: 3.5
+    disabled: false
+
+  - name: startpage
+    engine: startpage
+    timeout: 4.0
+    disabled: false
+
+  - name: wikipedia
+    engine: wikipedia
+    timeout: 2.5
+    disabled: false
+
+  - name: google
+    engine: google
+    disabled: true
+
+  - name: bing
+    engine: bing
+    disabled: true
+

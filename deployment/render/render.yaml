@@ -1,0 +1,17 @@
+# Render Blueprint for Dora Search Emergency Fallback
+services:
+  - type: web
+    name: dora-search-render-fallback
+    env: docker
+    dockerfilePath: ./deployment/render/Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon # or frankfurt, ohio, singapore
+    healthCheckPath: /healthz
+    autoDeploy: false
+    envVars:
+      - key: SEARXNG_SECRET
+        generateValue: true
+      - key: PORT
+        value: 8080
+

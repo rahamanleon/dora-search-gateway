@@ -1,0 +1,58 @@
+# SearXNG configuration for Render Free Tier (512MB RAM budget)
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "Dora Search (Render Fallback)"
+  donation_url: false
+  contact_url: false
+  privacypolicy_url: false
+  enable_metrics: false
+
+server:
+  port: 8080
+  bind_address: "0.0.0.0"
+  limiter: false # Free container has only 512MB, avoid standalone Valkey overhead
+  image_proxy: false
+  http_protocol_version: "1.1"
+  method: "GET"
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "auto"
+  ban_time_on_fail: 300
+  max_ban_time_on_fail: 3600
+  formats:
+    - json
+    - html
+
+engines:
+  - name: duckduckgo
+    engine: duckduckgo
+    timeout: 3.0
+    disabled: false
+
+  - name: brave
+    engine: brave
+    timeout: 3.0
+    disabled: false
+
+  - name: qwant
+    engine: qwant
+    timeout: 3.5
+    disabled: false
+
+  - name: wikipedia
+    engine: wikipedia
+    timeout: 2.5
+    disabled: false
+
+  - name: google
+    engine: google
+    disabled: true
+
+  - name: bing
+    engine: bing
+    disabled: true
+

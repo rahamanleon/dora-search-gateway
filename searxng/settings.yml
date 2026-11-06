@@ -1,0 +1,95 @@
+# SearXNG configuration for Dora Search Infrastructure
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "Dora Search Engine"
+  donation_url: false
+  contact_url: false
+  privacypolicy_url: false
+  enable_metrics: false
+
+server:
+  # Secret key used for session cookies and HMAC. Must be 32+ bytes random hex in production.
+  secret_key: "dora_searxng_secret_key_change_me_in_production_min32chars"
+  port: 8080
+  bind_address: "0.0.0.0"
+  base_url: false # Automatically inferred or set via SEARXNG_BASE_URL
+  limiter: true   # Enable Valkey-backed rate limiter
+  image_proxy: false
+  http_protocol_version: "1.1"
+  method: "GET"
+  default_http_headers:
+    X-Content-Type-Options: "nosniff"
+    X-XSS-Protection: "1; mode=block"
+    X-Download-Options: "noopen"
+    X-Robots-Tag: "noindex, nofollow"
+    Referrer-Policy: "no-referrer"
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "auto"
+  ban_time_on_fail: 300
+  max_ban_time_on_fail: 7200
+  formats:
+    - html
+    - json  # Critical: Enables JSON API search responses
+
+# Valkey / Redis connection for caching and rate limiting
+redis:
+  url: "redis://valkey:6379/0"
+
+# Keyless upstream engines configured with timeouts and suspensions
+engines:
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+    timeout: 3.0
+    disabled: false
+    weight: 1.0
+
+  - name: brave
+    engine: brave
+    shortcut: br
+    timeout: 3.0
+    disabled: false
+    weight: 1.0
+
+  - name: qwant
+    engine: qwant
+    shortcut: qw
+    timeout: 3.5
+    disabled: false
+    weight: 0.8
+
+  - name: startpage
+    engine: startpage
+    shortcut: sp
+    timeout: 4.0
+    disabled: false
+    weight: 0.8
+
+  - name: wikipedia
+    engine: wikipedia
+    shortcut: wp
+    timeout: 2.5
+    disabled: false
+    weight: 0.5
+
+  - name: wikidata
+    engine: wikidata
+    shortcut: wd
+    timeout: 2.5
+    disabled: false
+    weight: 0.5
+
+  # Disabled paid/key-required engines
+  - name: google
+    engine: google
+    disabled: true
+
+  - name: bing
+    engine: bing
+    disabled: true
+
