@@ -7,6 +7,8 @@ primary_region = "iad"
 
 [env]
   PORT = "8080"
+  UWSGI_WORKERS = "1"
+  UWSGI_THREADS = "2"
 
 [http_service]
   internal_port = 8080
@@ -14,7 +16,6 @@ primary_region = "iad"
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-  processes = ["app"]
 
   [http_service.concurrency]
     type = "requests"
@@ -22,7 +23,7 @@ primary_region = "iad"
     soft_limit = 20
 
 [[vm]]
-  memory = "256mb"
+  memory = "512mb"
   cpu_kind = "shared"
   cpus = 1
 
@@ -31,5 +32,6 @@ primary_region = "iad"
     port = 8080
     type = "http"
     interval = "30s"
-    timeout = "5s"
+    timeout = "10s"
+    grace_period = "60s"
     path = "/healthz"
